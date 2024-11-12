@@ -1,5 +1,6 @@
 <script setup>
-
+import { useCategoryStore } from '@/stores/category';
+const categorySore=useCategoryStore()
 </script>
 
 <template>
@@ -9,12 +10,9 @@
         <RouterLink to="/">小兔鲜</RouterLink>
       </h1>
       <ul class="app-header-nav">
-        <li class="home">
-          <RouterLink to="/">首页</RouterLink>
+        <li class="home" v-for="item in categorySore.categoryList" :key="item.id">
+          <RouterLink to="/">{{item.name}}</RouterLink>
         </li>
-        <li> <RouterLink to="/">居家</RouterLink> </li>
-        <li> <RouterLink to="/">美食</RouterLink> </li>
-        <li> <RouterLink to="/">服饰</RouterLink> </li>
       </ul>
       <div class="search">
         <i class="iconfont icon-search"></i>
@@ -28,7 +26,7 @@
 
 
 <style scoped lang='scss'>
-.app-header {
+  .app-header {
   background: #fff;
 
   .container {
