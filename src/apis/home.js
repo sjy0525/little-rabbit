@@ -1,7 +1,11 @@
 import httpInstance from "@/utils/http";
-export function useBannerData(){
+export function useBannerData(params={}){
+  const {distributionSite='1'}=params
   return httpInstance({
-    url:'/home/banner'
+    url:'/home/banner',
+    params:{
+      distributionSite
+    }
   })
 }
 
