@@ -1,22 +1,33 @@
 <script setup>
-import { onMounted,ref } from 'vue';
-import HomePanel from './HomePanel.vue';
-import { getNewAPI } from '@/apis/home';
+import HomePanel from './HomePanel.vue'
+import { getNewAPI } from '@/apis/home'
+import { onMounted, ref } from 'vue'
 
-const newList=ref([])
-const getNewList=async ()=>{
-  const res=await getNewAPI()
-  newList.value=res.result
+// 获取数据
+const newList = ref([])
+
+const getNewList = async () => {
+  const res = await getNewAPI()
+  newList.value = res.result
 }
-onMounted(()=>{getNewList()})
+
+onMounted(() => getNewList())
+
 </script>
 
 <template>
-  <home-panel title="新鲜好物" sub-title="新鲜出炉，品牌靠谱">
-
-  </home-panel>
-  <div></div>
-  下面是插槽主体内容模版
+  <HomePanel title="新鲜好物" sub-title="新鲜出炉 品质靠谱">
+    <ul class="goods-list">
+      <li v-for="item in newList" :key="item.id">
+        <RouterLink :to="`/detail/${item.id}`">
+          <img :src="item.picture" alt="" />
+          <p class="name">{{ item.name }}</p>
+          <p class="price">&yen;{{ item.price }}</p>
+        </RouterLink>
+      </li>
+    </ul>
+  </HomePanel>
+  <!-- 下面是插槽主体内容模版
   <ul class="goods-list">
     <li v-for="item in newList" :key="item.id">
       <RouterLink to="/">
@@ -26,7 +37,7 @@ onMounted(()=>{getNewList()})
       </RouterLink>
     </li>
   </ul>
-
+  -->
 </template>
 
 

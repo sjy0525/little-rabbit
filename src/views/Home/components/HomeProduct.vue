@@ -1,21 +1,20 @@
 <script setup>
-import { onMounted,ref } from 'vue';
 import HomePanel from './HomePanel.vue'
-import { getGoodsAPI } from '@/apis/home';
-import goodsItem from './goodsItem.vue';
-const goodsList=ref([])
-const getGoodsList=async()=>{
-  const res=await getGoodsAPI()
-  goodsList.value=res.result
+import { getGoodsAPI } from '@/apis/home'
+import { onMounted, ref } from 'vue'
+import goodsItem from '../goodsItem.vue'
+// 获取数据列表
+const goodsProduct = ref([])
+const getGoods = async () => {
+  const res = await getGoodsAPI()
+  goodsProduct.value = res.result
 }
-onMounted(()=>{
-  getGoodsList()
-})
+onMounted(() => getGoods())
 </script>
 
 <template>
   <div class="home-product">
-    <HomePanel :title="cate.name" v-for="cate in goodsList" :key="cate.id">
+    <HomePanel :title="cate.name" v-for="cate in goodsProduct" :key="cate.id">
       <div class="box">
         <RouterLink class="cover" to="/">
           <img v-img-lazy="cate.picture" />
@@ -25,8 +24,8 @@ onMounted(()=>{
           </strong>
         </RouterLink>
         <ul class="goods-list">
-          <li v-for="good in cate.goods" :key="good.id">
-            <goodsItem :good="good"></goodsItem>
+          <li v-for="goods in cate.goods" :key="goods.id">
+            <goodsItem :good="goods" />
           </li>
         </ul>
       </div>
@@ -38,6 +37,7 @@ onMounted(()=>{
 .home-product {
   background: #fff;
   margin-top: 20px;
+
   .sub {
     margin-bottom: 2px;
 
@@ -121,41 +121,7 @@ onMounted(()=>{
       }
     }
 
-    .goods-item {
-      display: block;
-      width: 220px;
-      padding: 20px 30px;
-      text-align: center;
-      transition: all .5s;
 
-      &:hover {
-        transform: translate3d(0, -3px, 0);
-        box-shadow: 0 3px 8px rgb(0 0 0 / 20%);
-      }
-
-      img {
-        width: 160px;
-        height: 160px;
-      }
-
-      p {
-        padding-top: 10px;
-      }
-
-      .name {
-        font-size: 16px;
-      }
-
-      .desc {
-        color: #999;
-        height: 29px;
-      }
-
-      .price {
-        color: $priceColor;
-        font-size: 20px;
-      }
-    }
   }
 }
 </style>
