@@ -1,6 +1,6 @@
 
 import { directivePlugin } from './directives'
-
+import { componentPlugin } from './components'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -13,3 +13,4 @@ app.use(createPinia())
 app.use(router)
 app.use(directivePlugin)
 app.mount('#app')
+app.use(componentPlugin)
