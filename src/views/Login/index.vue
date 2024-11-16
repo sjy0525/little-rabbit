@@ -29,11 +29,24 @@ const rules={
 }
 
 const formRef=ref(null)
+import { loginAPI } from '@/apis/login';
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
+import { useRouter } from 'vue-router';
+const router=useRouter()
 const doLogin=()=>{
-  formRef.value.validate((valid)=>{
+  const {account,password}=userInfo.value
+  formRef.value.validate(async(valid)=>{
     console.log(valid)
+    if(valid){
+      const res=await loginAPI({account,password})
+      ElMessage({ type: 'success', message: '登录成功' })
+      router.replace({ path: '/' })
+    }
   })
 }
+
+
 </script>
 
 
