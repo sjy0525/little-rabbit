@@ -16,3 +16,13 @@ export const findNewCartList=()=>{
     url:'/member/cart'
   })
 }
+
+export const delCartAPI=(ids)=>{
+  return httpInstance({
+    url:'/member/cart',
+    method:'delete',
+    data:{
+      ids
+    }
+  })
+}

@@ -2,13 +2,13 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useUserStore } from "./login";
-import { findNewCartList, insertCartAPI } from "@/apis/cart";
+import { delCartAPI, findNewCartList, insertCartAPI } from "@/apis/cart";
 
 export const useCartStore=defineStore('cart',()=>{
   const cartList=ref([])
+  const userStore=useUserStore()
+  const isLogin=computed(()=>userStore.userInfo.token)
   const addCart=async (goods)=>{
-    const userStore=useUserStore()
-    const isLogin=computed(()=>userStore.userInfo.token)
     const { skuId, count }=goods
     if(isLogin.value){
       await insertCartAPI({ skuId, count })
@@ -23,8 +23,14 @@ export const useCartStore=defineStore('cart',()=>{
       }
     }
   }
-  const delCart=(skuId)=>{
-    cartList.value=cartList.value.filter(item=>skuId !== item.skuId)
+  const delCart=async(skuId)=>{
+    if(isLogin.value){
+      await delCartAPI([skuId])
+      const res=await findNewCartList()
+      cartList.value=res.result
+    }else{
+      cartList.value=cartList.value.filter(item=>skuId !== item.skuId)
+    }
   }
   const allCount=computed(()=>cartList.value.reduce((sum,item)=>sum+item.count,0))
   const allPrice=computed(()=>cartList.value.reduce((sum,item)=>sum+item.count*item.price,0))
