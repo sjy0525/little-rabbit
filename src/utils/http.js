@@ -17,12 +17,22 @@ httpInstance.interceptors.request.use(config => {
   return config
 }, e => Promise.reject(e))
 
+import { useRouter } from 'vue-router'
+// const useStore=useUserStore()
+// const router=useRouter()
 // axios响应式拦截器
 httpInstance.interceptors.response.use(res => res.data, e => {
+  const router=useRouter()
+  const useStore=useUserStore()
   ElMessage({
     type:'warning',
     message:e.response.data.msg
   })
+  //401 token失效处理
+  if(e.response.status===401){
+    useStore.clearUserInfo()
+    router.push('/login')
+  }
   return Promise.reject(e)
 })
 export default httpInstance
