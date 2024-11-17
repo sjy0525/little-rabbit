@@ -1,6 +1,7 @@
 <script setup>
 import { useCategoryStore } from '@/stores/category';
 const categorySore=useCategoryStore()
+import headerCart from './headerCart.vue';
 </script>
 
 <template>
@@ -19,7 +20,7 @@ const categorySore=useCategoryStore()
         <input type="text" placeholder="搜一搜">
       </div>
       <!-- 头部购物车 -->
-
+      <headerCart></headerCart>
     </div>
   </header>
 </template>
