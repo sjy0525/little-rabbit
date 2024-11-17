@@ -16,12 +16,23 @@ export const useCartStore=defineStore('cart',()=>{
   }
   const allCount=computed(()=>cartList.value.reduce((sum,item)=>sum+item.count,0))
   const allPrice=computed(()=>cartList.value.reduce((sum,item)=>sum+item.count*item.price,0))
+  const singleCheck=(skuId,selected)=>{
+    const item=cartList.value.find((item)=>item.skuId===skuId)
+    item.selected=selected
+  }
+  const isAll=computed(()=>cartList.value.every((item)=>item.selected))
+  const allCheck=(selected)=>{
+    cartList.value.forEach((item)=>item.selected=selected)
+  }
   return {
     cartList,
     addCart,
     delCart,
     allCount,
-    allPrice
+    allPrice,
+    singleCheck,
+    isAll,
+    allCheck
   }
 },
 {
