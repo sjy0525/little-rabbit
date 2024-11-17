@@ -8,6 +8,10 @@ export const useCartStore=defineStore('cart',()=>{
   const cartList=ref([])
   const userStore=useUserStore()
   const isLogin=computed(()=>userStore.userInfo.token)
+  const updateNewList=async()=>{
+    const res=await findNewCartList()
+    cartList.value=res.result
+  }
   const addCart=async (goods)=>{
     const { skuId, count }=goods
     if(isLogin.value){
@@ -31,6 +35,9 @@ export const useCartStore=defineStore('cart',()=>{
     }else{
       cartList.value=cartList.value.filter(item=>skuId !== item.skuId)
     }
+  }
+  const clearCart=()=>{
+    cartList.value=[]
   }
   const allCount=computed(()=>cartList.value.reduce((sum,item)=>sum+item.count,0))
   const allPrice=computed(()=>cartList.value.reduce((sum,item)=>sum+item.count*item.price,0))
@@ -56,7 +63,9 @@ export const useCartStore=defineStore('cart',()=>{
     isAll,
     allCheck,
     selectedCount,
-    selectedPrice
+    selectedPrice,
+    clearCart,
+    updateNewList
   }
 },
 {
