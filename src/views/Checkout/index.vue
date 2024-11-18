@@ -1,31 +1,37 @@
 <script setup>
-import { getCheckoutAPI,createOrderAPI } from '@/apis/checkout';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useCartStore } from '@/stores/cart';
-const cartStore=useCartStore()
-const router=useRouter()
-
-const checkInfo = ref({})  // 订单对象
-const curAddress = ref({})  // 地址对象
-const getCheckInfo=async()=>{
-  const res=await getCheckoutAPI()
-  checkInfo.value=res.result
-  const item=checkInfo.value.userAddresses.find(item=>item.isDefault===0)
-  curAddress.value=item
+import { getCheckoutAPI, createOrderAPI } from '@/apis/checkout'
+import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useCartStore } from '@/stores/cart'
+const cartStore = useCartStore()
+const router = useRouter()
+// 获取结算信息
+const checkInfo = ref({}) // 订单对象
+const curAddress = ref({}) // 默认地址
+const getCheckInfo = async () => {
+  const res = await getCheckoutAPI()
+  checkInfo.value = res.result
+  // 适配默认地址
+  // 从地址列表中筛选出来 isDefault === 0 那一项
+  const item = checkInfo.value.userAddresses.find(item => item.isDefault === 0)
+  curAddress.value = item
 }
-const showDialog=ref(false)
-onMounted(()=>getCheckInfo())
 
-const activeAddress=ref({})
-const switchAddress=(item)=>{
-  activeAddress.value=item
+onMounted(() => getCheckInfo())
+
+// 控制弹框打开
+const showDialog = ref(false)
+
+
+// 切换地址
+const activeAddress = ref({})
+const switchAddress = (item) => {
+  activeAddress.value = item
 }
-const confirm=()=>{
-  curAddress.value=activeAddress.value
-  showDialog.value=false
-  activeAddress={}
-
+const confirm = () => {
+  curAddress.value = activeAddress.value
+  showDialog.value = false
+  activeAddress.value = {}
 }
 
 // 创建订单
@@ -53,6 +59,7 @@ const createOrder = async () => {
   // 更新购物车
   cartStore.updateNewList()
 }
+
 </script>
 
 <template>
@@ -72,8 +79,8 @@ const createOrder = async () => {
               </ul>
             </div>
             <div class="action">
-              <el-button size="large" @click="showDialog=true">切换地址</el-button>
-              <el-button size="large" @click="addFlag = true">添加地址</el-button>
+              <el-button size="large" @click="showDialog = true">切换地址</el-button>
+              <el-button size="large">添加地址</el-button>
             </div>
           </div>
         </div>
@@ -147,31 +154,31 @@ const createOrder = async () => {
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large" @click="createOrder">提交订单</el-button>
+          <el-button @click="createOrder" type="primary" size="large">提交订单</el-button>
         </div>
       </div>
     </div>
   </div>
   <!-- 切换地址 -->
-  <el-dialog title="切换收货地址" width="30%" center v-model="showDialog">
-  <div class="addressWrapper">
-    <div class="text item" v-for="item in checkInfo.userAddresses"  :key="item.id" @click="switchAddress(item)" :class="{active:activeAddress.id===item.id}">
-      <ul>
-      <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
-      <li><span>联系方式：</span>{{ item.contact }}</li>
-      <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
-      </ul>
+  <el-dialog v-model="showDialog" title="切换收货地址" width="30%" center>
+    <div class="addressWrapper">
+      <div class="text item" :class="{ active: activeAddress.id === item.id }" @click="switchAddress(item)"
+        v-for="item in checkInfo.userAddresses" :key="item.id">
+        <ul>
+          <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
+          <li><span>联系方式：</span>{{ item.contact }}</li>
+          <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <template #footer>
-    <span class="dialog-footer">
-      <el-button>取消</el-button>
-      <el-button type="primary" @click="confirm">确定</el-button>
-    </span>
-  </template>
-</el-dialog>
-  <!-- 添加地址 -->
-</template>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button>取消</el-button>
+        <el-button type="primary" @click="confirm">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+<!-- 添加地址 --></template>
 
 <style scoped lang="scss">
 .xtx-pay-checkout-page {
